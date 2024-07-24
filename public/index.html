@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EventVerse</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+  <!-- jQuery link -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    
+  <script>
+    $(document).ready(function () {
+      let active = localStorage.getItem("activeuser");
+      $("#signup").click(function () {
+        let email = $("#txtEmail").val();
+        let password = $("#pwd").val();
+        let category = $("#combo").val();
+
+        if (email === "" || password === "" || category === "Select your category") {
+          $("#msgSignup").html("Please fill in all fields.");
+          return;
+        }
+
+        let obj = {
+          type: "get",
+          url: "/signup-process",
+          data: {
+            txtEmail: email,
+            pwd: password,
+            combo: category
+          }
+        };
+        $.ajax(obj).done(function (resp) {
+          $("#msgSignup").html(resp);
+        }).fail(function (err) {
+          alert(err.statusText);
+        });
+      });
+
+      $("#login").click(function () {
+        let email = $("#txtEmaill").val();
+        let password = $("#txtPwd").val();
+
+        if (email === "" || password === "") {
+          $("#logspan").html("Please fill in all fields.");
+          return;
+        }
+
+        let obj = {
+          type: "get",
+          url: "/login-process",
+          data: {
+            txtEmaill: email,
+            txtPwd: password
+          }
+        };
+        $.ajax(obj).done(function (resp) {
+          if (resp === "Influencer") {
+            localStorage.setItem("activeuser", email);
+            location.href = "infl-dash.html";
+          } else if (resp === "Client") {
+            localStorage.setItem("activeuser", email);
+            location.href = "client-dash.html";
+          } 
+          else if (resp === "Admin") {
+            localStorage.setItem("activeuser", email);
+            location.href = "admin-dash.html";
+          } 
+          else {
+            alert(resp);
+          }
+        }).fail(function (err) {
+          alert(err.statusText);
+        });
+      });
+    });
+  </script>
+  <style>
+    .card {
+      width: 300px;
+      margin: 20px;
+    }
+
+    .card-body {
+      text-align: center;
+    }
+
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .footer {
+      width: 100%;
+      padding: 20px 0;
+      color: white;
+
+    }
+  </style>
+</head>
+
+<body style="padding: 90px;">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+    <!-- <div class="container-fluid">
+      <p>LOGO</p>-->
+    <a class="navbar-brand" href="index.html" style="margin-left: 20px;">EventVerse</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="#services">Our Services</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#team">Our Team</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#reach">Reach Us</a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <button class="btn btn-outline-danger " type="button" data-bs-toggle="modal"
+          data-bs-target="#exampleModal" style="margin-right: 5px;">Signup</button>
+        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
+          data-bs-target="#exampleModallog" style="margin-right: 10px;">Login</button>
+      </form>
+    </div>
+    </div>
+  </nav>
+
+  <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel" style="height: 640px;">
+    <div class="carousel-inner">
+      <div class="carousel-item active" data-bs-interval="2000">
+        <img src="pics/slide1.png" class="d-block w-100" alt="..." style="height: 640px;">
+      </div>
+      <div class="carousel-item" data-bs-interval="2000">
+        <img src="pics/slide2.jpg" class="d-block w-100" alt="..." style="height: 640px;">
+      </div>
+      <div class="carousel-item" data-bs-interval="2000">
+        <img src="pics/slide3.jpg" class="d-block w-100" alt="..." style="height: 640px;">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  <br>
+  <h2 id="services"></h2>
+  <br>
+  <br>
+  <h4>
+    <center>OUR SERVICES</center>
+  </h4>
+  <div class="container my-5">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <img src="pics/collab.jpeg" class="animate__animated animate__fadeInLeft" alt="Image"
+          style="height: 360px; width: 550px;">
+      </div>
+      <div class="col-md-6">
+        <h2 class="animate__animated animate__fadeInRight">Collaborations</h2>
+        <p class="animate__animated animate__fadeInRight">Connect with influencers, collaborate with them for their next
+          big event! Discover new opportunities, amplify your brand, and create memorable experiences. Join EventVerse
+          to unlock a world of creativity, excitement, and endless possibilities in the influencer realm!</p>
+      </div>
+    </div>
+
+    <div class="row align-items-center my-5">
+      <div class="col-md-6 order-md-2">
+        <img src="pics/event.png" class="animate__animated animate__fadeInRight" alt="Image"
+          style="height: 360px; width: 550px;">
+      </div>
+      <div class="col-md-6 order-md-1">
+        <h2 class="animate__animated animate__fadeInLeft">Event Management</h2>
+        <p class="animate__animated animate__fadeInLeft">Register your events with us and we'll make every moment
+          unforgettable! Dive into a world of excitement, connect with your audience, and amplify your reach
+          effortlessly. Join EventVerse to turn your events into sensational experiences that resonate with energy and
+          fun!</p>
+      </div>
+    </div>
+
+    <div class="row align-items-center my-5">
+      <div class="col-md-6">
+        <img src="pics/discover.png" class="animate__animated animate__fadeInLeft" alt="Image"
+          style="height: 360px; width: 550px;">
+      </div>
+      <div class="col-md-6">
+        <h2 class="animate__animated animate__fadeInRight">Discover Influencers</h2>
+        <p class="animate__animated animate__fadeInRight">Find the perfect match for your campaign! Discover talented
+          influencers, explore their unique styles, and engage with your target audience like never before. Join
+          EventVerse to elevate your brand's presence and create impactful connections in the dynamic world of
+          influencers!</p>
+      </div>
+    </div>
+
+    <div class="row align-items-center my-5">
+      <div class="col-md-6 order-md-2">
+        <img src="pics/meetgreet.jpg" class="animate__animated animate__fadeInRight" alt="Image"
+          style="height: 360px; width: 550px;">
+      </div>
+      <div class="col-md-6 order-md-1">
+        <h2 class="animate__animated animate__fadeInLeft">Meet & Greet</h2>
+        <p class="animate__animated animate__fadeInLeft">Get ready for an unforgettable experience! Meet your favorite
+          influencers up close and personal. Snap selfies, get autographs, and engage in fun activities. Don't miss this
+          chance to connect, laugh, and make memories with the stars you love. Join us for a day of excitement and
+          inspiration!Get a chance to meet your favourite influencers.</p>
+      </div>
+    </div>
+  </div>
+  <h2 id="team"></h2>
+  <br>
+  <br>
+  <br>
+  <h4>
+    <center>OUR TEAM</center>
+  </h4>
+  <div class="container cards-container">
+    <div class="card">
+      <img src="pics/sir.jpeg" class="card-img-top" alt="Mr. Rajesh Bansal" style="height: 330px; width: 300px;">
+      <div class="card-body">
+        <h5 class="card-title">Under the Guidance of:</h5>
+        <p class="card-text">Mr. Rajesh Bansal</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="pics/me.jpeg" class="card-img-top" alt="Muskaan Singhal" style="height: 330px; width: 300px;">
+      <div class="card-body">
+        <h5 class="card-title">Developed by:</h5>
+        <p class="card-text">Muskaan Singhal</p>
+      </div>
+    </div>
+  </div>
+  <br>
+  <h2 id="reach"></h2>
+  <br>
+  <br>
+  <h4>
+    <center>REACH US</center>
+    <br>
+    <center>
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3501.8124458641055!2d77.29735138316627!3d28.63538276291251!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfb4c41f26d27%3A0x8dacb7de1a4c4765!2sNarwana%20Apartment%2C%20I.P.Extension%2C%20Patparganj%2C%20Delhi%2C%20110092!5e0!3m2!1sen!2sin!4v1721248654434!5m2!1sen!2sin"
+        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </center>
+  </h4>
+
+  <br><br><br>
+  <footer class="footer fixed" style="background-color: grey;">
+    <div class="container-fluid">
+      <!-- Use container-fluid instead of container to make it full-width -->
+      <div class="row">
+        <div class="col-md-6">
+          <p>&copy; 2024 EventVerse. All rights reserved.</p>
+        </div>
+        
+        <div class="col-md-3">
+          <p></p>
+        </div>
+        <div class="col-md-3">
+          <p>Contact Us: +918799737902 singhal123muskaan@gmail.com</p>
+        </div>
+        <div class="col-md-6" style="float:right;">
+          <a href="#"><i class="fa-brands fa-facebook" style="size: 1000px;" style="color: white;"></a>
+          <a href="#"><i class="fa-brands fa-instagram" style="size: 1000px;"></a>
+          <a href="#"><i class="fa-brands fa-linkedin" style="size: 1000px;"></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Modal Signup -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Signup here
+            <br>
+            <span id="msgSignup" style="color:red"> * </span>
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="txtEmail" class="form-label">Email address</label>
+              <input type="email" id="txtEmail" name="txtEmail" class="form-control">
+              <div class="form-text" id="emailHelpSignup">We'll never share your email with anyone else.</div>
+            </div>
+            <div class="mb-3">
+              <label for="pwd" class="form-label">Password</label>
+              <input type="password" id="pwd" name="pwd" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="combo" class="form-label">Select Category</label>
+              <select class="form-select" id="combo" name="combo">
+                <option selected>Select your category</option>
+                <option value="Client">Client</option>
+                <option value="Influencer">Influencer</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" id="signup">Signup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+
+  <!-- Modal Login -->
+  <div class="modal fade" id="exampleModallog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Login here
+            <br>
+            <span id="logspan" style="color:red"> * </span>
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="txtEmaill" class="form-label">Email address</label>
+              <input type="email" id="txtEmaill" name="txtEmaill" class="form-control">
+              <div class="form-text" id="emailHelpLogin">We'll never share your email with anyone else.</div>
+            </div>
+            <div class="mb-3">
+              <label for="txtPwd" class="form-label">Password</label>
+              <input type="password" id="txtPwd" name="txtPwd" class="form-control">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer text-center">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" id="login">Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+
+
+
+
+<!-- ======================================================
+  
+  <div class="d-flex justify-content-center">
+    <form class="d-flex" role="search" method="post">
+      <center>
+        <a class="btn btn-primary" href="/client-profile.html">Client Profile</a>
+        <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Signup</button>
+        <button class="btn btn-secondary" type="button" style="margin-left:10px" data-bs-toggle="modal"
+          data-bs-target="#exampleModallog">Login</button>
+          <a class="btn btn-primary" href="/infl-dash">Influencer Dashboard</a>
+          <a class="btn btn-primary" href="/admin-dash">Admin Dashboard</a>
+          <a class="btn btn-primary" href="/influ-finder">Influencer Finder</a>
+          <a class="btn btn-primary" href="/events-manager">Events</a>
+        </center>
+      </form>
+    </div>
+
+-->

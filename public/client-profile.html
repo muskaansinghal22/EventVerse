@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Profile</title>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- jquery link -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            // Autofill email if stored in localStorage
+            if (localStorage.getItem("email")) {
+                $("#txtemail").val(localStorage.getItem("email"));
+            }
+
+            $("#search").click(function () {
+                let obj = {
+                    type: "get",
+                    url: "/find-userc",
+                    data: {
+                        txtemail: $("#txtemail").val()
+                    }
+                };
+                $.ajax(obj).done(function (result) {
+                    if (result.length === 0) {
+                        $("#saveBtn").prop("disabled", false);
+                        $("#updateBtn").prop("disabled", true);
+                        alert("Invalid ID");
+                    } else {
+                        $("#saveBtn").prop("disabled", true);
+                        $("#updateBtn").prop("disabled", false);
+                        $("#txtname").val(result[0].cname);
+                        $("#txtcity").val(result[0].city);
+                        $("#txtstate").val(result[0].state);
+                        $("#txtio").val(result[0].org);
+                        $("#txtcontact").val(result[0].contact);
+                    }
+                }).fail(function (err) {
+                    alert(err.statusText);
+                });
+            });
+
+            $("form").submit(function (event) {
+                const email = $("#txtemail").val();
+                const mobile = $("#txtcontact").val();
+
+                if (!validateEmail(email)) {
+                    alert("Please enter a valid email address.");
+                    event.preventDefault();
+                }
+
+                if (!validateMobile(mobile)) {
+                    alert("Please enter a valid 10-digit mobile number.");
+                    event.preventDefault();
+                }
+
+                // Store email in localStorage
+                if (validateEmail(email)) {
+                    localStorage.setItem("email", email);
+                }
+            });
+
+            function validateEmail(email) {
+                const re = /\S+@\S+\.\S+/;
+                return re.test(email);
+            }
+
+            function validateMobile(mobile) {
+                const re = /^[0-9]{10}$/;
+                return re.test(mobile);
+            }
+        });
+
+        function doLogout() {
+            localStorage.removeItem("activeuser");
+            location.href = "index.html";
+        }
+    </script>
+    <style>
+        .form-label {
+            color: orange;
+        }
+
+        .profile-picture-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-picture-container input[type="file"] {
+            margin-right: 10px;
+        }
+
+        .profile-picture-container img {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body style="padding: 50px;">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">EventVerse</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <form class="d-flex">
+                <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal"
+                    data-bs-target="#exampleModallog" onclick="doLogout()">Logout</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="col-md-12">
+            <h2 class="text-danger text-center">Profile Form</h2>
+        </div>
+        <div class="d-flex justify-content-center flex-column align-items-center">
+            <form class="row g-3" method="post" enctype="multipart/form-data">
+                <div class="col-md-6">
+                    <label for="txtemail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="txtemail" name="txtemail" required>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary" id="search" name="search">Search</button>
+                </div>
+                <input type="hidden" name="hdn" id="hdn">
+                <div class="col-md-6">
+                    <label for="txtname" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="txtname" placeholder="Enter Name" name="txtname"
+                        required>
+                </div>
+                <div class="col-md-6">
+                    <label for="txtcity" class="form-label">City</label>
+                    <input type="text" class="form-control" id="txtcity" placeholder="Enter City" name="txtcity"
+                        required>
+                </div>
+                <div class="col-md-6">
+                    <label for="txtstate" class="form-label">State</label>
+                    <input type="text" class="form-control" id="txtstate" placeholder="Enter State" name="txtstate"
+                        required>
+                </div>
+                <div class="col-md-6">
+                    <label for="txtio" class="form-label">Individual/Organization</label>
+                    <input type="text" class="form-control" id="txtio" name="txtio" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="txtcontact" class="form-label">Contact</label>
+                    <input type="text" class="form-control" id="txtcontact" placeholder="Enter Contact Number"
+                        name="txtcontact" required>
+                </div>
+                <div class="col-12 text-center mt-3">
+                    <input type="submit" class="btn btn-primary me-2" formaction="/save-processc" id="saveBtn"
+                        value="Send to Server">
+                    <input type="submit" class="btn btn-secondary" formaction="/update-processc" id="updateBtn"
+                        value="Modify">
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

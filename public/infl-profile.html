@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influencer Profile</title>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- jquery link -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        function doPrev(fileCtrl, imgPrev) {
+            let [file] = fileCtrl.files;
+            if (file) {
+                imgPrev.src = URL.createObjectURL(file);
+            }
+        }
+
+        $(document).ready(function () {
+            $("#search").click(function () {
+                let obj = {
+                    type: "get",
+                    url: "/find-user",
+                    data: {
+                        inputEmail4: $("#inputEmail4").val()
+                    }
+                };
+                $.ajax(obj).done(function (result) {
+                    if (result.length === 0) {
+                        alert("Invalid ID");
+                    } else {
+                        $("#inputName").val(result[0].iname);
+                        $("#prev").prop("src", "uploads/" + result[0].picpath);
+                        $("#combog").val(result[0].gender);
+                        $("#inputdob").val(result[0].dob);
+                        $("#inputAddress2").val(result[0].address);
+                        $("#comboc").val(result[0].city);
+                        $("#inputcontact").val(result[0].contact);
+                        $("#combof").val(result[0].fields);
+                        $("#inputinsta").val(result[0].insta);
+                        $("#inputfb").val(result[0].fb);
+                        $("#inputyoutube").val(result[0].youtube);
+                        $("#other").val(result[0].others);
+                    }
+                }).fail(function (err) {
+                    alert(err.statusText);
+                });
+            });
+            let active = localStorage.getItem("activeuser");
+            //alert(active);
+            //$("#dash").html("Welcome " + active);
+            $("#inputEmail4").val(active).prop("readonly", true);
+        });
+
+        function validateForm() {
+            let contact = document.getElementById("inputcontact").value;
+            let email = document.getElementById("inputEmail4").value;
+            let emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            let contactPattern = /^[0-9]{10}$/;
+
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return false;
+            }
+
+            if (!contactPattern.test(contact)) {
+                alert("Please enter a valid 10-digit contact number.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+        <script>
+            $(document).ready(function()
+        {
+            if (active == null) {
+                location.href = "index.html";
+                return;
+            }
+    
+        })
+               
+            function doLogout() {
+                localStorage.removeItem("activeuser");
+                location.href = "index.html";
+            }  
+        </script>
+    <style>
+        
+        .profile-picture-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-picture-container input[type="file"] {
+            margin-right: 10px;
+        }
+
+        .profile-picture-container img {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body style="padding: 60px;">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">EventVerse</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <form class="d-flex">
+                <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal"
+                    data-bs-target="#exampleModallog" onclick="doLogout()">Logout</button>
+            </form>
+        </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="col-md-12">
+            <h2 class="text text-center">Profile Form</h2>
+        </div>
+        <div class="d-flex justify-content-center flex-column align-items-center">
+            <form class="row g-3" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+                <div class="col-md-6">
+                    <label for="inputEmail4" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="inputEmail4" name="inputEmail4" required>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary" id="search" name="search">Search</button>
+                </div>
+                <input type="hidden" name="hdn" id="hdn">
+                <div class="col-md-6">
+                    <label for="inputName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="inputName" placeholder="Enter Name" name="txtname" required>
+                </div>
+                <div class="col-md-6 profile-picture-container">
+                    <label for="inputFile" class="form-label">Profile Picture</label>
+                    <input class="form-control" type="file" name="ppic" onchange="doPrev(this, prev);" required>
+                    <img src="" id="prev" alt="" width="100" height="100">
+                </div>
+                <div class="col-md-6">
+                    <label for="combog" class="form-label">Gender</label>
+                    <select class="form-select" id="combog" name="combog" required>
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="inputdob" class="form-label">DOB</label>
+                    <input type="date" class="form-control" id="inputdob" name="inputdob" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="inputAddress2" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor" name="inputAddress2" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="comboc" class="form-label">City</label>
+                        <input type="text" list="cities" class="form-select" id="comboc" name="comboc" required>
+                        <datalist id="cities">
+                        <option value="" disabled selected>Select City</option>
+                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                        <option value="Assam">Assam</option>
+                        <option value="Bihar">Bihar</option>
+                        <option value="Chhattisgarh">Chhattisgarh</option>
+                        <option value="Goa">Goa</option>
+                        <option value="Gujarat">Gujarat</option>
+                        <option value="Haryana">Haryana</option>
+                        <option value="Jharkhand">Jharkhand</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Kerala">Kerala</option>
+                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Manipur">Assam</option>
+                        <option value="Meghalaya">Meghalaya</option>
+                        <option value="Mizoram">Mizoram</option>
+                        <option value="Nagaland">Nagaland</option>
+                        <option value="Odisha">Odisha</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Rajasthan">Rajasthan</option>
+                        <option value="Sikkim">Sikkim</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Telangana">Telangana</option>
+                        <option value="Tripura">Tripura</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Uttarakhand">Uttarakhand</option>
+                        <option value="West Bengal">West Bengal</option>
+                        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                        <option value="Chandigarh">Chandigarh</option>
+                        <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                        <option value="Daman and Diu">Daman and Diu</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Ladakh">Ladakh</option>
+                        <option value="Lakshadweep">Lakshadweep</option>
+                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                        <option value="Puducherry">Puducherry</option>
+                </datalist>
+                </div>
+                <div class="col-md-6">
+                    <label for="inputcontact" class="form-label">Contact</label>
+                    <input type="text" class="form-control" id="inputcontact" placeholder="Enter Contact Number"
+                        name="inputcontact" required pattern="[0-9]{10}" title="Please enter a valid 10-digit contact number">
+                </div>
+                <div class="col-md-6">
+                    <label for="combof" class="form-label">Fields</label>
+                        <input type="text" list="fields" class="form-select" id="combof" name="combof" required>
+                        <datalist id="fields">
+                        <option value="" disabled selected>Select Field</option>
+                        <option value="Skincare">Skincare</option>
+                        <option value="Singing">Singing</option>
+                        <option value="Dancing">Dancing</option>
+                        <option value="Beauty">Beauty</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Fashion">Fashion</option>
+                        <option value="Health and Wellness">Health and Wellness</option>
+                        <option value="Business">Business</option>
+                        <option value="Fitness">Fitness</option>
+                        <option value="Food">Food</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Video Game">Video Game</option>
+                        <option value="Vlogger">Vlogger</option>
+                        <option value="Photographer">Photographer</option>
+                </datalist>
+                    <hr>
+                </div>
+                <div class="col-md-6">
+                    <label for="inputinsta" class="form-label">Instagram</label>
+                    <input type="text" class="form-control" id="inputinsta" name="insta" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="inputfb" class="form-label">Facebook</label>
+                    <input type="text" class="form-control" id="inputfb" name="fb" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="inputyoutube" class="form-label">YouTube</label>
+                    <input type="text" class="form-control" id="inputyoutube" name="youtube">
+                </div>
+                <div class="col-md-6">
+                    <label for="other" class="form-label">Other</label>
+                    <input type="text" class="form-control" id="other" name="other">
+                </div>
+                <div class="col-12 text-center mt-3">
+                    <input type="submit" class="btn btn-primary me-2" formaction="/save-process" value="Save">
+                    <input type="submit" class="btn btn-secondary" formaction="/update-process" value="Update">
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
